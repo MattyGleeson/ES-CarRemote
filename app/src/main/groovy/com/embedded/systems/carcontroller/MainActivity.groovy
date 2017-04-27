@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothServerSocket
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
@@ -43,6 +42,7 @@ class MainActivity extends Activity {
             }
             false
         }
+        forward.onClickListener = { View v -> }
 
         backward.onTouchListener = { View v, MotionEvent e ->
             switch (e.action) {
@@ -55,6 +55,7 @@ class MainActivity extends Activity {
             }
             false
         }
+        backward.onClickListener = { View v -> }
 
         left.onTouchListener = { View v, MotionEvent e ->
             switch (e.action) {
@@ -67,6 +68,7 @@ class MainActivity extends Activity {
             }
             false
         }
+        left.onClickListener = { View v -> }
 
         right.onTouchListener = { View v, MotionEvent e ->
             switch (e.action) {
@@ -79,6 +81,7 @@ class MainActivity extends Activity {
             }
             false
         }
+        right.onClickListener = { View v -> }
     }
 
     void send()
