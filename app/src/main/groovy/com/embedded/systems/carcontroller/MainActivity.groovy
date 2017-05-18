@@ -51,76 +51,112 @@ class MainActivity extends AppCompatActivity {
 //        bluetoothService.establishConnection({ boolean success ->
 //
             forward = findViewById(R.id.forward) as FrameLayout
-//            backward = findViewById(R.id.backward) as FrameLayout
-//            left = findViewById(R.id.left) as FrameLayout
-//            right = findViewById(R.id.right) as FrameLayout
-//
+            backward = findViewById(R.id.backward) as FrameLayout
+            left = findViewById(R.id.left) as FrameLayout
+            right = findViewById(R.id.right) as FrameLayout
+
             forward.onTouchListener = { View v, MotionEvent e ->
                 switch (e.action) {
                     case MotionEvent.ACTION_UP:
                         log.warn "[!!!] F: UP"
-                        bt.sendMessage("0")
+                        Buttons.forward = false
+                        sendMessage()
                         break
                     case MotionEvent.ACTION_DOWN:
                         log.warn "[!!!] F: DOWN"
-                        bt.sendMessage("1")
+                        Buttons.forward = true
+                        sendMessage()
                         break
                 }
                 false
             }
             forward.onClickListener = { View v -> }
-//
-//            backward.onTouchListener = { View v, MotionEvent e ->
-//                switch (e.action) {
-//                    case MotionEvent.ACTION_UP:
-//                        log.info("[!!!] B: UP")
-//                        break
-//                    case MotionEvent.ACTION_DOWN:
-//                        log.info("[!!!] B: DOWN")
-//                        break
-//                }
-//                false
-//            }
-//            backward.onClickListener = { View v -> }
-//
-//            left.onTouchListener = { View v, MotionEvent e ->
-//                switch (e.action) {
-//                    case MotionEvent.ACTION_UP:
-//                        log.info("[!!!] L: UP")
-//                        break
-//                    case MotionEvent.ACTION_DOWN:
-//                        log.info("[!!!] L: DOWN")
-//                        break
-//                }
-//                false
-//            }
-//            left.onClickListener = { View v -> }
-//
-//            right.onTouchListener = { View v, MotionEvent e ->
-//                switch (e.action) {
-//                    case MotionEvent.ACTION_UP:
-//                        log.info("[!!!] R: UP")
-//                        break
-//                    case MotionEvent.ACTION_DOWN:
-//                        log.info("[!!!] R: DOWN")
-//                        break
-//                }
-//                false
-//            }
-//            right.onClickListener = { View v -> }
+
+            backward.onTouchListener = { View v, MotionEvent e ->
+                switch (e.action) {
+                    case MotionEvent.ACTION_UP:
+                        log.warn "[!!!] B: UP"
+                        Buttons.backward = false
+                        sendMessage()
+                        break
+                    case MotionEvent.ACTION_DOWN:
+                        log.warn "[!!!] B: DOWN"
+                        Buttons.backward = true
+                        sendMessage()
+                        break
+                }
+                false
+            }
+            backward.onClickListener = { View v -> }
+
+            left.onTouchListener = { View v, MotionEvent e ->
+                switch (e.action) {
+                    case MotionEvent.ACTION_UP:
+                        log.warn "[!!!] L: UP"
+                        Buttons.left = false
+                        sendMessage()
+                        break
+                    case MotionEvent.ACTION_DOWN:
+                        log.warn "[!!!] L: DOWN"
+                        Buttons.left = true
+                        sendMessage()
+                        break
+                }
+                false
+            }
+            left.onClickListener = { View v -> }
+
+            right.onTouchListener = { View v, MotionEvent e ->
+                switch (e.action) {
+                    case MotionEvent.ACTION_UP:
+                        log.warn "[!!!] R: UP"
+                        Buttons.right = false
+                        sendMessage()
+                        break
+                    case MotionEvent.ACTION_DOWN:
+                        log.warn "[!!!] R: DOWN"
+                        Buttons.right = true
+                        sendMessage()
+                        break
+                }
+                false
+            }
+            right.onClickListener = { View v -> }
 //        })
 
         bt = new Bluetooth(this, mHandler)
         connectService()
     }
 
-    public void connectService(){
+    private void sendMessage()
+    {
+        if (Buttons.forward && !Buttons.backward && !Buttons.left && !Buttons.right)
+            bt.sendMessage("1")
+        else if (Buttons.forward && !Buttons.backward && !Buttons.left && Buttons.right)
+            bt.sendMessage("2")
+        else if (!Buttons.forward && !Buttons.backward && !Buttons.left && Buttons.right)
+            bt.sendMessage("3")
+        else if (!Buttons.forward && Buttons.backward && !Buttons.left && Buttons.right)
+            bt.sendMessage("4")
+        else if (!Buttons.forward && Buttons.backward && !Buttons.left && !Buttons.right)
+            bt.sendMessage("5")
+        else if (!Buttons.forward && Buttons.backward && Buttons.left && !Buttons.right)
+            bt.sendMessage("6")
+        else if (!Buttons.forward && !Buttons.backward && Buttons.left && !Buttons.right)
+            bt.sendMessage("7")
+        else if (Buttons.forward && !Buttons.backward && Buttons.left && !Buttons.right)
+            bt.sendMessage("8")
+        else if (!Buttons.forward && !Buttons.backward && !Buttons.left && !Buttons.right)
+            bt.sendMessage("0")
+    }
+
+    void connectService(){
         try {
 //            status.setText("Connecting...");
-            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (bluetoothAdapter.isEnabled()) {
-                bt.start();
-                bt.connectDevice("HC-06");
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.defaultAdapter
+            if (bluetoothAdapter.enabled) {
+                bt.start()
+                bt.connectDevice("HC-06")
                 log.debug "Btservice started - listening"
 //                status.setText("Connected");
             } else {
