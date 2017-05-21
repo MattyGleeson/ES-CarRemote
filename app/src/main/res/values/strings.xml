@@ -4,4 +4,5 @@
     <string name="backward">Backward</string>
     <string name="left">Left</string>
     <string name="right">Right</string>
+    <string name="refresh">Refresh</string>
 </resources>

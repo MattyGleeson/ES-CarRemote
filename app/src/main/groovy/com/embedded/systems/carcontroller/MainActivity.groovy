@@ -7,9 +7,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.CardView
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.Toast
 import com.embedded.systems.carcontroller.bluetooth.Bluetooth
 import com.embedded.systems.carcontroller.bluetooth.BluetoothService
@@ -18,10 +21,10 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class MainActivity extends AppCompatActivity {
 
-    private FrameLayout forward
-    private FrameLayout backward
-    private FrameLayout left
-    private FrameLayout right
+    private CardView forward
+    private CardView backward
+    private CardView left
+    private CardView right
     private BluetoothService bluetoothService
 
     private Bluetooth bt
@@ -50,10 +53,10 @@ class MainActivity extends AppCompatActivity {
 //        bluetoothService = new BluetoothService(blAdapter)
 //        bluetoothService.establishConnection({ boolean success ->
 //
-            forward = findViewById(R.id.forward) as FrameLayout
-            backward = findViewById(R.id.backward) as FrameLayout
-            left = findViewById(R.id.left) as FrameLayout
-            right = findViewById(R.id.right) as FrameLayout
+            forward = findViewById(R.id.forward) as CardView
+            backward = findViewById(R.id.backward) as CardView
+            left = findViewById(R.id.left) as CardView
+            right = findViewById(R.id.right) as CardView
 
             forward.onTouchListener = { View v, MotionEvent e ->
                 switch (e.action) {
@@ -158,6 +161,7 @@ class MainActivity extends AppCompatActivity {
                 bt.start()
                 bt.connectDevice("HC-06")
                 log.debug "Btservice started - listening"
+                Toast.makeText(this, "Bluetooth Connected", Toast.LENGTH_LONG).show()
 //                status.setText("Connected");
             } else {
                 log.debug "Btservice started - bluetooth is not enabled"
@@ -169,6 +173,23 @@ class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = menuInflater
+        inflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    @Override
+    boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.itemId) {
+            case R.id.refresh :
+                connectService()
+                break
+            default :
+                return super.onOptionsItemSelected(item)
+        }
+    }
 
     private final Handler mHandler = new Handler() {
         @Override
@@ -176,19 +197,19 @@ class MainActivity extends AppCompatActivity {
             switch (msg.what) {
                 case Bluetooth.MESSAGE_STATE_CHANGE:
                     log.debug "MESSAGE_STATE_CHANGE: " + msg.arg1
-                    break;
+                    break
                 case Bluetooth.MESSAGE_WRITE:
                     log.debug "MESSAGE_WRITE "
-                    break;
+                    break
                 case Bluetooth.MESSAGE_READ:
                     log.debug "MESSAGE_READ "
-                    break;
+                    break
                 case Bluetooth.MESSAGE_DEVICE_NAME:
                     log.debug "MESSAGE_DEVICE_NAME " + msg
-                    break;
+                    break
                 case Bluetooth.MESSAGE_TOAST:
                     log.debug "MESSAGE_TOAST " + msg
-                    break;
+                    break
             }
         }
     }
